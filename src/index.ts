@@ -174,7 +174,7 @@ export default class VirtualModulesPlugin {
     }
   }
 
-  public apply(compiler: Compiler) {
+  public apply(compiler: Compiler, now?: boolean) {
     this._compiler = compiler;
 
     const afterEnvironmentHook = () => {
@@ -262,7 +262,10 @@ export default class VirtualModulesPlugin {
       callback();
     };
 
-    if (compiler.hooks) {
+    if (now) {
+      afterEnvironmentHook();
+      afterResolversHook();
+    } else if (compiler.hooks) {
       compiler.hooks.afterEnvironment.tap('VirtualModulesPlugin', afterEnvironmentHook);
       compiler.hooks.afterResolvers.tap('VirtualModulesPlugin', afterResolversHook);
       compiler.hooks.watchRun.tapAsync('VirtualModulesPlugin', watchRunHook);
